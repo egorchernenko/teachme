@@ -7,8 +7,10 @@ var ObjectID = require('mongodb');
 var Todo = require('./models/todo');
 var User = require('./models/user');
 
-
 var app = express();
+const port = process.env.PORT || 3000;
+
+
 app.use(bodyParser.json());
 
 //post
@@ -46,7 +48,7 @@ app.get('/todos/:id', function (req,res) {
 
         res.send(todo).status(200);
     }).catch(function (reason) {
-        res.send(reason).status(400);
+        res.sendStatus(400).send(reason);
     })
 
 });
@@ -55,8 +57,8 @@ app.get('/todos/:id', function (req,res) {
 
 
 
-app.listen(3000, function () {
-    console.log('Started on port 3000');
+app.listen(port, function () {
+    console.log(`Started on port ${port}`);
 });
 
 module.exports = app;
