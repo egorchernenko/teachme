@@ -96,7 +96,7 @@ app.patch('/todos/:id', function (req,res) {
 
 
 //USER post
-
+//register
 app.post('/users', function (req,res) {
    var body = _.pick(req.body, ['email','password']);
    var user = new User(body);
@@ -110,10 +110,12 @@ app.post('/users', function (req,res) {
    })
 });
 
+//get token
 app.get('/users/me', authenicate, function (req,res) {
     res.send(req.user);
 });
 
+//login
 app.post('/users/login',function (req,res) {
     var body = _.pick(req.body, ['email','password']);
 
@@ -124,6 +126,15 @@ app.post('/users/login',function (req,res) {
 
     }).catch(function (reason) {
         res.sendStatus(400).send(reason);
+    })
+});
+
+//sign out
+app.delete('/users/me/token', authenicate, function (req,res) {
+    req.user.removeToken(req.token).then(function () {
+        res.sendStatus(200);
+    }, function () {
+        res.sendStatus(400);
     })
 });
 
