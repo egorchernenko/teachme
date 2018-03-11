@@ -110,9 +110,21 @@ app.post('/users', function (req,res) {
    })
 });
 
-
 app.get('/users/me', authenicate, function (req,res) {
     res.send(req.user);
+});
+
+app.post('/users/login',function (req,res) {
+    var body = _.pick(req.body, ['email','password']);
+
+    User.findByCredentials(body.email,body.password).then(function (user) {
+        user.generateAuthToken().then(function (token) {
+            res.header('x-auth',token).send(user)
+        });
+
+    }).catch(function (reason) {
+        res.sendStatus(400).send(reason);
+    })
 });
 
 app.listen(port, function () {
