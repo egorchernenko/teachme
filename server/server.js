@@ -8,6 +8,7 @@ var ObjectID = require('mongodb');
 
 var Todo = require('./models/todo');
 var User = require('./models/user');
+var authenicate = require('./middleware/authenicate');
 
 var app = express();
 const port = process.env.PORT || 3000;
@@ -109,6 +110,10 @@ app.post('/users', function (req,res) {
    })
 });
 
+
+app.get('/users/me', authenicate, function (req,res) {
+    res.send(req.user);
+});
 
 app.listen(port, function () {
     console.log(`Started on port ${port}`);
