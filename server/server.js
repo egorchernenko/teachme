@@ -8,7 +8,7 @@ var ObjectID = require('mongodb');
 
 var Todo = require('./models/todo');
 var User = require('./models/user');
-var authenicate = require('./middleware/authenicate');
+var authenticate = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT || 3000;
@@ -17,15 +17,16 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 //post
-app.post('/todos',function (req,res) {
+app.post('/todos',authenticate, function (req,res) {
     console.log(req.body);
 
     var todo = new Todo({
-        text: req.body.text
+        text: req.body.text,
+        _creator: req.user._id
     });
 
     todo.save().then(function (doc) {
-        res.sendStatus(200);
+        res.send(doc).sendStatus(200);
     }, function (err) {
         res.status(400).send(err);
     });
@@ -33,18 +34,24 @@ app.post('/todos',function (req,res) {
 });
 
 //get
-app.get('/todos',function (req,res) {
-    Todo.find().then(function (todos) {
-        res.send({todos});
+app.get('/todos',authenticate,function (req,res) {
+    console.log(req.user._id);
+    Todo.find({
+        _creator: req.user._id
+    }).then(function (todos) {
+        res.send({todos: todos});
     },function (err) {
         res.status(400).send(err);
     })
 });
 
-app.get('/todos/:id', function (req,res) {
+app.get('/todos/:id',authenticate, function (req,res) {
    var id = req.params.id;
-
-    Todo.findById(id).then(function (todo) {
+    debugger;
+    Todo.findOne({
+        _id: id,
+        _creator: req.user._id
+    }).then(function (todo) {
         if (!todo){
             return res.sendStatus(404);
         }
@@ -57,10 +64,13 @@ app.get('/todos/:id', function (req,res) {
 });
 
 //delete
-app.delete('/todos/:id', function (req,res) {
+app.delete('/todos/:id',authenticate, function (req,res) {
     var id = req.params.id;
 
-    Todo.findByIdAndRemove(id).then(function (todo) {
+    Todo.findOneAndRemove({
+        _id: id,
+        _creator: req.user._id
+    }).then(function (todo) {
         if (!todo){
             return res.sendStatus(404);
         }
@@ -72,7 +82,8 @@ app.delete('/todos/:id', function (req,res) {
 });
 
 //update
-app.patch('/todos/:id', function (req,res) {
+app.patch('/todos/:id',authenticate, function (req,res) {
+    debugger;
    var id = req.params.id;
    var body = _.pick(req.body, ['text', 'completed']);
 
@@ -83,7 +94,8 @@ app.patch('/todos/:id', function (req,res) {
        body.completedAt = null;
    }
 
-   Todo.findByIdAndUpdate(id,{$set: body},{new: true}).then(function (todo) {
+
+   Todo.findOneAndUpdate({_id: id, _creator: req.user._id}, {$set: body}, {new: true}).then(function (todo) {
        if (!todo){
            return res.sendStatus(404);
        }
@@ -111,7 +123,7 @@ app.post('/users', function (req,res) {
 });
 
 //get token
-app.get('/users/me', authenicate, function (req,res) {
+app.get('/users/me', authenticate, function (req,res) {
     res.send(req.user);
 });
 
@@ -130,7 +142,7 @@ app.post('/users/login',function (req,res) {
 });
 
 //sign out
-app.delete('/users/me/token', authenicate, function (req,res) {
+app.delete('/users/me/token', authenticate, function (req,res) {
     req.user.removeToken(req.token).then(function () {
         res.sendStatus(200);
     }, function () {
