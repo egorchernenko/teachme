@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var Subject = mongoose.model('Subject', {
+var SubjectShema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -32,5 +32,7 @@ var Subject = mongoose.model('Subject', {
     }
 
 });
+var Subject = mongoose.model('Subject', SubjectShema);
+
 
 module.exports = Subject;

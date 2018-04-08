@@ -3,8 +3,20 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+var subject = require('./subject');
 
 var UserSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    surname: {
+        type: String,
+        required: true
+    },
+    mySubjects:{
+      type: subject.schema
+    },
     email: {
         type: String,
         required: true,
@@ -60,6 +72,17 @@ UserSchema.methods.removeToken = function (token) {
             tokens: {
                 token: token
             }
+        }
+    });
+
+};
+
+UserSchema.methods.addSubject = function (subject) {
+    var user = this;
+
+    return user.update({
+       $push : {
+           mySubjects: subject
         }
     });
 

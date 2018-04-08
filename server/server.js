@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 //post
 
 app.post('/subjects',authenticate, function (req,res) {
-    var todo = new Subject({
+    var subject = new Subject({
         name: req.body.name,
         _teacher: req.user._id,
         description: req.body.description,
@@ -29,10 +29,12 @@ app.post('/subjects',authenticate, function (req,res) {
     });
 
 
-    todo.save().then(function (doc) {
+    subject.save().then(function (doc) {
         res.send(doc).sendStatus(200);
     }, function (err) {
         res.status(400).send(err);
+    }).catch(function (reason) {
+        res.status(400);
     });
 
 });
@@ -116,7 +118,7 @@ app.patch('/subjects/:id',authenticate, function (req,res) {
 //USER
 //register
 app.post('/users', function (req,res) {
-   var body = _.pick(req.body, ['email','password']);
+   var body = _.pick(req.body, ['name','surname','email','password']);
    var user = new User(body);
 
    user.save().then(function (user) {
@@ -124,7 +126,7 @@ app.post('/users', function (req,res) {
    }).then(function (token) {
        res.header('x-auth',token).send(user);
     }).catch(function (reason) {
-       res.sendStatus(400).send(reason);
+       res.status(400).send(reason);
    })
 });
 
@@ -154,6 +156,24 @@ app.delete('/users/me/token', authenticate, function (req,res) {
     }, function () {
         res.sendStatus(400);
     })
+});
+
+//add subjects
+app.patch('/users/add/subject/:id',authenticate, function (req,res) {
+    var id = req.params.id;
+
+    Subject.findOne({_id:id}).then(function (subject) {
+
+        req.user.addSubject(subject).then(function () {
+            res.sendStatus(200);
+        }).catch(function (reason) {
+            res.send(reason).sendStatus(400);
+        });
+
+    }).catch(function (reason) {
+        res.send(reason).sendStatus(400);
+    });
+
 });
 
 app.listen(port, function () {
