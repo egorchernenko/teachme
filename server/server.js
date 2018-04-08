@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('./db/mongoose');
 var ObjectID = require('mongodb');
 
-var Todo = require('./models/todo');
+var Subject = require('./models/subject');
 var User = require('./models/user');
 var authenticate = require('./middleware/authenticate');
 
@@ -16,14 +16,18 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
+//SUBJECT particular user
 //post
-app.post('/todos',authenticate, function (req,res) {
-    console.log(req.body);
 
-    var todo = new Todo({
-        text: req.body.text,
-        _creator: req.user._id
+app.post('/subjects',authenticate, function (req,res) {
+    var todo = new Subject({
+        name: req.body.name,
+        _teacher: req.user._id,
+        description: req.body.description,
+        teacherName: req.user.email,
+        schedule: req.body.schedule
     });
+
 
     todo.save().then(function (doc) {
         res.send(doc).sendStatus(200);
@@ -34,23 +38,33 @@ app.post('/todos',authenticate, function (req,res) {
 });
 
 //get
-app.get('/todos',authenticate,function (req,res) {
+app.get('/subjects',authenticate,function (req,res) {
     console.log(req.user._id);
-    Todo.find({
-        _creator: req.user._id
+    Subject.find({
+        _teacher: req.user._id
     }).then(function (todos) {
-        res.send({todos: todos});
+        res.send({subjects: todos});
     },function (err) {
         res.status(400).send(err);
     })
 });
 
-app.get('/todos/:id',authenticate, function (req,res) {
+//SUBJECT all users
+app.get('/subjects/all', function (req,res) {
+
+    Subject.find().then(function (todos) {
+        res.send({subjects: todos});
+    },function (err) {
+        res.status(400).send(err);
+    })
+});
+
+app.get('/subjects/:id',authenticate, function (req,res) {
    var id = req.params.id;
     debugger;
-    Todo.findOne({
+    Subject.findOne({
         _id: id,
-        _creator: req.user._id
+        _teacher: req.user._id
     }).then(function (todo) {
         if (!todo){
             return res.sendStatus(404);
@@ -64,12 +78,12 @@ app.get('/todos/:id',authenticate, function (req,res) {
 });
 
 //delete
-app.delete('/todos/:id',authenticate, function (req,res) {
+app.delete('/subjects/:id',authenticate, function (req,res) {
     var id = req.params.id;
 
-    Todo.findOneAndRemove({
+    Subject.findOneAndRemove({
         _id: id,
-        _creator: req.user._id
+        _teacher: req.user._id
     }).then(function (todo) {
         if (!todo){
             return res.sendStatus(404);
@@ -82,32 +96,24 @@ app.delete('/todos/:id',authenticate, function (req,res) {
 });
 
 //update
-app.patch('/todos/:id',authenticate, function (req,res) {
+app.patch('/subjects/:id',authenticate, function (req,res) {
     debugger;
    var id = req.params.id;
-   var body = _.pick(req.body, ['text', 'completed']);
+   var body = _.pick(req.body, ['name', 'description']);
 
-   if (_.isBoolean(body.completed) && body.completed){
-       body.completedAt = new Date().getTime();
-   }else{
-       body.completed = false;
-       body.completedAt = null;
-   }
-
-
-   Todo.findOneAndUpdate({_id: id, _creator: req.user._id}, {$set: body}, {new: true}).then(function (todo) {
-       if (!todo){
+   Subject.findOneAndUpdate({_id: id, _teacher: req.user._id}, {$set: body}, {new: true}).then(function (subject) {
+       if (!subject){
            return res.sendStatus(404);
        }
 
-       res.send(todo).sendStatus(200);
+       res.send(subject).sendStatus(200);
    }).catch(function (reason) {
        res.send(reason).sendStatus(400);
    })
 });
 
 
-//USER post
+//USER
 //register
 app.post('/users', function (req,res) {
    var body = _.pick(req.body, ['email','password']);
