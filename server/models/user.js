@@ -14,9 +14,9 @@ var UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    mySubjects:{
+    mySubjects: [{
       type: subject.schema
-    },
+    }],
     email: {
         type: String,
         required: true,

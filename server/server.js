@@ -99,7 +99,6 @@ app.delete('/subjects/:id',authenticate, function (req,res) {
 
 //update
 app.patch('/subjects/:id',authenticate, function (req,res) {
-    debugger;
    var id = req.params.id;
    var body = _.pick(req.body, ['name', 'description']);
 
@@ -173,6 +172,12 @@ app.patch('/users/add/subject/:id',authenticate, function (req,res) {
     }).catch(function (reason) {
         res.send(reason).sendStatus(400);
     });
+
+});
+
+app.get('/users/subjects/subscribed', authenticate, function (req,res) {
+
+    res.send({subjects: req.user.mySubjects}).sendStatus(200);
 
 });
 
