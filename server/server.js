@@ -13,11 +13,14 @@ var authenticate = require('./middleware/authenticate');
 var app = express();
 const port = process.env.PORT || 3000;
 
-
 app.use(bodyParser.json());
 
 //SUBJECT particular user
 //post
+
+app.get('/',function (req,res) {
+   res.sendFile( __dirname + '/index.html');
+});
 
 app.post('/subjects',authenticate, function (req,res) {
     var subject = new Subject({

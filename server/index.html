@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Server documentation</title>
+</head>
+<body>
+<h1>Здарова, тут будет дока по серваку ептиль ну а если че пиши</h1>
+<p>Для начала установи Postman и импортируй вот <a href="config/Teachme.postman_collection.json">этот</a> json файл. <br/>
+    На сылки не нажимай, ничего не произойдет, тестить только через Postman.
+</p>
+<p></p>
+
+<h4>Сама дока:</h4>
+<ol>
+    <li>
+        <h3>Регестрация юзера</h3>
+        <p> <b>POST</b> запрос <a href="/users">/users</a></p>
+        <p> body: <br/>
+            <code>{<br/>
+                "name": "Pussy",<br/>
+                "surname": "Golder",<br/>
+                "email": "wet@mail.com",<br/>
+                "password": "qwe123"<br/>
+                }<br/>
+            </code>
+        </p>
+        <p> header: <br/>
+            <code>
+                Content-Type : application/json
+            </code>
+        </p>
+    </li>
+
+    <li>
+    <h3>Логин</h3>
+        <p> <b>POST</b> запрос <a href="/users/login">/users/login</a></p>
+    <p> body: <br/>
+        <code>{<br/>
+            "email": "wet@mail.com",<br/>
+            "password": "qwe123"<br/>
+            }<br/>
+        </code>
+    </p>
+    <p> header: <br/>
+        <code>
+            Content-Type : application/json
+        </code>
+    </p>
+    </li>
+
+    <li>
+        <h3>Выход</h3>
+        <p> <b>DELETE</b> запрос <a href="/users/me/token">/users/me/token</a></p>
+        <p> header: <br/>
+            <code>
+                x-auth: сюда токен (юзер обязательно должен быть залогинен)
+            </code>
+        </p>
+    </li>
+
+    <li>
+        <h3>Добавление нового курсa</h3>
+        <p> <b>POST</b> запрос <a href="/subjects">/subjects</a>, каждый юзер может создать свой собественный курс</p>
+        <p> body: <br/>
+            <code>{<br/>
+                "name": "Guitar teacher",<br/>
+                "description": "Bryan brayn tudu du",<br/>
+                "schedule": [<br/>
+                {"day": "Thuesday", "start": "10-00", "end": "10-45"},<br/>
+                {"day": "Wednesday", "start": "11-00", "end": "11-45"},<br/>
+                {"day": "Thirday", "start": "13-00", "end": "14-00"},<br/>
+                {"day": "Friday", "start": "11-00", "end": "11-45"},<br/>
+                {"day": "Saturday", "start": "11-00", "end": "11-45"}<br/>
+                ]<br/>
+                }<br/>
+            </code>
+        </p>
+        <p> header: <br/>
+            <code>
+                Content-Type : application/json<br/>
+                x-auth: сюда токен (юзер обязательно должен быть залогинен)
+            </code>
+        </p>
+    </li>
+
+    <li>
+        <h3>Получение списка курсов которые ты ведешь</h3>
+        <p> <b>GET</b> запрос <a href="/subjects">/subjects</a></p>
+        <p> header: <br/>
+            <code>
+                x-auth: сюда токен (юзер обязательно должен быть залогинен)
+            </code>
+        </p>
+    </li>
+
+    <li>
+        <h3>Получение курса который ты ведешь по его ID</h3>
+        <p> <b>GET</b> запрос <a href="/subjects/:id">/subjects/:id</a></p>
+        <p> header: <br/>
+            <code>
+                x-auth: сюда токен (юзер обязательно должен быть залогинен)
+            </code>
+        </p>
+    </li>
+
+    <li>
+        <h3>Удаление курса который ты ведешь по его ID</h3>
+        <p> <b>DELETE</b> запрос <a href="/subjects/:id">/subjects/:id</a></p>
+        <p> header: <br/>
+            <code>
+                x-auth: сюда токен (юзер обязательно должен быть залогинен)
+            </code>
+        </p>
+    </li>
+
+    <li>
+        <h3>Обновление информации по курсу</h3>
+        <p> <b>PATCH</b> запрос <a href="/subjects/:id">/subjects/:id</a></p>
+        <p> body: <br/>
+            <code>{<br/>
+                "name": "Guitar teacher",<br/>
+                "description": "Bryan brayn tudu du",<br/>
+                "schedule": [<br/>
+                {"day": "Thuesday", "start": "10-00", "end": "10-45"},<br/>
+                {"day": "Wednesday", "start": "11-00", "end": "11-45"},<br/>
+                {"day": "Thirday", "start": "13-00", "end": "14-00"},<br/>
+                {"day": "Friday", "start": "11-00", "end": "11-45"},<br/>
+                {"day": "Saturday", "start": "11-00", "end": "11-45"}<br/>
+                ]<br/>
+                }<br/>
+            </code>
+        </p>
+        <p> header: <br/>
+            <code>
+                Content-Type : application/json<br/>
+                x-auth: сюда токен (юзер обязательно должен быть залогинен)
+            </code>
+        </p>
+    </li>
+
+    <li>
+        <h3>Получение всех существующих курсов, например для отображения на главной</h3>
+        <p> <b>GET</b> запрос <a href="/subjects/all">/subjects/all</a></p>
+    </li>
+
+    <li>
+        <h3>Подписка на курс по его ID</h3>
+        <p> <b>PATCH</b> запрос <a href="/users/add/subject/:id">/users/add/subject/:id</a></p>
+        <p> header: <br/>
+            <code>
+                Content-Type : application/json<br/>
+                x-auth: сюда токен (юзер обязательно должен быть залогинен)
+            </code>
+        </p>
+    </li>
+
+    <li>
+        <h3>Получить список курсов на которые подписан ты</h3>
+        <p> <b>GET</b> запрос <a href="/users/subjects/subscribed">/users/subjects/subscribed</a></p>
+        <p> header: <br/>
+            <code>
+                x-auth: сюда токен (юзер обязательно должен быть залогинен)
+            </code>
+        </p>
+    </li>
+
+</ol>
+<dl>
+    <li>x-auth - это токен, получаем мы его при регестрации или при логине, нужен для того что бы совершать действия над юзером</li>
+</dl>
+
+<footer>
+    <p align="center">&copy; 2018 Esketit<p>
+</footer>
+</body>
+</html>
