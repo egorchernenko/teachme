@@ -11,14 +11,44 @@ var User = require('./models/user');
 var authenticate = require('./middleware/authenticate');
 
 var app = express();
-const port = process.env.PORT || 3000;
 
+const http = require('http');
+const socketIO = require('socket.io');
+var server = http.createServer(app);
+var io = socketIO(server);
+
+var currentUser = null;
+
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
+//chat
+app.get('/chat',authenticate, function (req,res) {
+    currentUser = {name: req.user.name, surname: req.user.surname, email: req.user.email,id: req.user._id};
+    res.sendFile( __dirname + '/chat.html');
+});
+
+io.on('connection', function(socket){
+    socket.user= currentUser;
+
+    socket.on('chat message', function(msg){
+        console.log('User is ', socket.user);
+        io.emit('chat message', {
+            message: msg,
+            user: currentUser,
+            date: new Date()
+    });
+    });
+});
+
+//documentation
+app.get('/',function (req,res) {
+   res.sendFile( __dirname + '/index.html');
+});
+
 //SUBJECT particular user
 //post
-
 app.post('/subjects',authenticate, function (req,res) {
     var subject = new Subject({
         name: req.body.name,
@@ -41,7 +71,6 @@ app.post('/subjects',authenticate, function (req,res) {
 
 //get
 app.get('/subjects',authenticate,function (req,res) {
-    console.log(req.user._id);
     Subject.find({
         _teacher: req.user._id
     }).then(function (todos) {
@@ -181,8 +210,13 @@ app.get('/users/subjects/subscribed', authenticate, function (req,res) {
 
 });
 
-app.listen(port, function () {
-    console.log(`Started on port ${port}`);
+
+//app.listen(port, function () {
+//    console.log(`Started on port ${port}`);
+//});
+
+server.listen(port, function () {
+    console.log(`Server is up on ${port}`);
 });
 
 module.exports = app;

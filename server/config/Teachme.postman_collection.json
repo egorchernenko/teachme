@@ -1,0 +1,361 @@
+{
+	"info": {
+		"_postman_id": "fcd72845-0b3b-40ba-9f8c-9e514dbef6ed",
+		"name": "Teachme",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST /users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "68761e81-7209-4fac-8c81-788a198fc5c7",
+						"type": "text/javascript",
+						"exec": [
+							"var token = postman.getResponseHeader('x-auth');",
+							"postman.setEnvironmentVariable('x-auth',token);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"newUser@mail.com\",\n  \"password\": \"qwe123\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /users/login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"first@mail.ru\",\n\t\"password\": \"qwe123\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/users/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "68761e81-7209-4fac-8c81-788a198fc5c7",
+						"type": "text/javascript",
+						"exec": [
+							"var token = postman.getResponseHeader('x-auth');",
+							"postman.setEnvironmentVariable('x-auth',token);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"teacher@mail.com\",\n  \"password\": \"qwe123\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /users/me/token",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth",
+						"value": "{{x-auth}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/users/me/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"me",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /subjects",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "33c34cdd-5fbf-44de-a612-c739968417eb",
+						"type": "text/javascript",
+						"exec": [
+							"var body = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable('todoId',body._id);"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-auth",
+						"value": "{{x-auth}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Swift 4\",\n  \"description\": \"Create useless application for IOS devices\",\n  \"schedule\": [\n  \t{\"day\": \"Sunday\", \"start\": \"10-00\", \"end\": \"10-45\"},\n  \t{\"day\": \"Monday\", \"start\": \"11-00\", \"end\": \"11-45\"},\n  \t{\"day\": \"Wednesday\", \"start\": \"18-30\", \"end\": \"19-30\"}\n  \t]\n}"
+				},
+				"url": {
+					"raw": "{{url}}/subjects",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subjects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /subjects",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-auth",
+						"value": "{{x-auth}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/subjects",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subjects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /subjects/:id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-auth",
+						"value": "{{x-auth}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/subjects/{{todoId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subjects",
+						"{{todoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /subjects/:id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth",
+						"value": "{{x-auth}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/subjects/{{todoId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subjects",
+						"{{todoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH /subjects/:id",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-auth",
+						"value": "{{x-auth}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"New text from postman\",\n\t\"description\": \"нью описание подьехало бродяга\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/subjects/{{todoId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subjects",
+						"{{todoId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /subjects/all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/subjects/all",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subjects",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH /users/add/subject/:id",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-auth",
+						"value": "{{x-auth}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/users/add/subject/5ac9dc5a4e7d6a0afc1e29f4",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"add",
+						"subject",
+						"5ac9dc5a4e7d6a0afc1e29f4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /users/subjects/subscribed",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-auth",
+						"value": "{{x-auth}}"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{url}}/users/subjects/subscribed",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"subjects",
+						"subscribed"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
