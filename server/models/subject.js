@@ -12,6 +12,15 @@ var SubjectShema = new mongoose.Schema({
         trim: true,
         default: false
     },
+    category: {
+        type: String,
+        required: true
+    },
+    price:{
+        type: Number,
+        required: true,
+        default: 0
+    },
     numberOfStudent:{
         type: Number,
         default: 0
@@ -33,6 +42,9 @@ var SubjectShema = new mongoose.Schema({
 
 });
 var Subject = mongoose.model('Subject', SubjectShema);
+var Categories = Object.freeze(["Программирование","Бизнес","Маркетинг","Дизайн","Языки","Точные наук","Садовоство","Строительство"]);
+
 
 
 module.exports = Subject;
+module.exports.Categories = Categories;

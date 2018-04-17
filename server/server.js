@@ -49,10 +49,13 @@ app.get('/',function (req,res) {
 
 //SUBJECT particular user
 //post
+
 app.post('/subjects',authenticate, function (req,res) {
     var subject = new Subject({
         name: req.body.name,
         _teacher: req.user._id,
+        price: req.body.price,
+        category: req.body.category,
         description: req.body.description,
         teacherName: req.user.email,
         schedule: req.body.schedule
@@ -83,25 +86,54 @@ app.get('/subjects',authenticate,function (req,res) {
 //SUBJECT all users
 app.get('/subjects/all', function (req,res) {
 
-    Subject.find().then(function (todos) {
-        res.send({subjects: todos});
+    Subject.find().then(function (subjects) {
+        res.send({subjects: subjects});
     },function (err) {
         res.status(400).send(err);
     })
 });
 
+app.get('/subjects/search/:id',function (req, res) {
+
+    var keyWord = req.params.id;
+
+    Subject.find({ name: { "$regex": keyWord, "$options": "i" } }).then(function (subjects) {
+        res.send({subjects: subjects});
+    }).catch(function (reason) {
+        res.sendStatus(404).send(reason);
+    });
+});
+
+app.post('/subjects/category',function (req, res) {
+
+    var keyWord = req.body.category;
+
+    Subject.find({ category: keyWord}).then(function (subjects) {
+        res.send({subjects: subjects});
+    }).catch(function (reason) {
+        res.sendStatus(404).send(reason);
+    });
+});
+
+
+
+app.get('/subjects/categories',function (req,res) {
+
+    res.send({categories: Subject.Categories}).sendStatus(200);
+});
+
 app.get('/subjects/:id',authenticate, function (req,res) {
    var id = req.params.id;
-    debugger;
+
     Subject.findOne({
         _id: id,
         _teacher: req.user._id
-    }).then(function (todo) {
-        if (!todo){
+    }).then(function (subject) {
+        if (!subject){
             return res.sendStatus(404);
         }
 
-        res.send(todo).status(200);
+        res.send(subject).status(200);
     }).catch(function (reason) {
         res.sendStatus(400).send(reason);
     })
