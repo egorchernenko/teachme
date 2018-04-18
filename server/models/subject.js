@@ -42,7 +42,7 @@ var SubjectShema = new mongoose.Schema({
 
 });
 var Subject = mongoose.model('Subject', SubjectShema);
-var Categories = Object.freeze(["Программирование","Бизнес","Маркетинг","Дизайн","Языки","Точные наук","Садовоство","Строительство"]);
+var Categories = Object.freeze(["Programming","Business","Marketing","Design","Languages","Science","Building","Garden"]);
 
 
 

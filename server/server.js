@@ -104,11 +104,11 @@ app.get('/subjects/search/:id',function (req, res) {
     });
 });
 
-app.post('/subjects/category',function (req, res) {
+app.get('/subjects/category/:id',function (req, res) {
 
-    var keyWord = req.body.category;
+    var keyWord = req.params.id;
 
-    Subject.find({ category: keyWord}).then(function (subjects) {
+    Subject.find({ category: { "$regex": keyWord, "$options": "i" } }).then(function (subjects) {
         res.send({subjects: subjects});
     }).catch(function (reason) {
         res.sendStatus(404).send(reason);
@@ -224,11 +224,17 @@ app.patch('/users/add/subject/:id',authenticate, function (req,res) {
 
     Subject.findOne({_id:id}).then(function (subject) {
 
-        req.user.addSubject(subject).then(function () {
-            res.sendStatus(200);
+        subject.update({
+            $inc: {numberOfStudent: 1 }
+        }).then(function () {
+            req.user.addSubject(subject).then(function () {
+                res.sendStatus(200);
+            })
         }).catch(function (reason) {
             res.send(reason).sendStatus(400);
         });
+
+
 
     }).catch(function (reason) {
         res.send(reason).sendStatus(400);
