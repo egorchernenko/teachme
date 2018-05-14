@@ -14,6 +14,10 @@ var UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    imagePath: {
+        type: String,
+        default: null
+    },
     mySubjects: [{
       type: subject.schema
     }],

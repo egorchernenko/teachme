@@ -14,38 +14,56 @@ var authenticate = require('./middleware/authenticate');
 
 var app = express();
 
+const port = process.env.PORT || 3000;
+
+app.use(bodyParser.json());
+
+
 const http = require('http');
 const socketIO = require('socket.io');
 var server = http.createServer(app);
 var io = socketIO(server);
 
-var currentUser = null;
+//saving photo to data base
+var multer = require('multer');
+var fs = require('fs');
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + req.user._id + '.jpg')
+    }
+})
 
-const port = process.env.PORT || 3000;
+var upload = multer({ storage: storage }).single('avatar');
 
-app.use(bodyParser.json());
-
-//chat
-app.get('/chat',authenticate, function (req,res) {
-    currentUser = {name: req.user.name, surname: req.user.surname, email: req.user.email,id: req.user._id};
-    res.sendFile( __dirname + '/chat.html');
+app.post('/user/uploadPhoto',authenticate, upload,function (req,res) {
+    User.findOne(req.user).then(function (user) {
+        user.update({
+            $set: {
+                imagePath: 'avatar' + '-' + user._id + '.jpg'
+            }
+        }).then(function () {
+            res.send({imagePath: user.imagePath});
+        }).catch(function (reason) {
+            res.sendStatus(404);
+        })
+    }).catch(function (reason) {
+        res.sendStatus(400);
+    })
 });
 
-io.on('connection', function(socket){
-    socket.user= currentUser;
-
-    socket.on('chat message', function(msg){
-        console.log('User is ', socket.user);
-        io.emit('chat message', {
-            message: msg,
-            user: currentUser,
-            date: new Date()
-    });
-    });
+app.get('user/avatar',authenticate,function (req,res) {
+    User.findOne(req.user).then(function (user) {
+        var filePath = fs.readFileSync('./uploads/'+req.user.imagePath);
+        res.send(filePath);
+    }).catch(function (reason) {
+        res.send(reason);
+    })
 });
 
 app.post('/chat/create', authenticate, function (req,res) {
-
 
     User.findById(req.body._id).then(function (user) {
         if (!user){
@@ -85,13 +103,9 @@ app.post('/chat/create', authenticate, function (req,res) {
                 })
             }
 
-
         }).catch(function (reason) {
             res.sendStatus(400);
         });
-
-
-
 
     }).catch(function (reason) {
         res.status(400).send(reason);
