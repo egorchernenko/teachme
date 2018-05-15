@@ -1,10 +1,14 @@
 const mongoose = require('mongoose');
-const chat = require('./chat');
-
+const Chat = require('./chat');
+const User = require('./user')
+;
 var messageSchema = new mongoose.Schema({
-    chat: chat.schema,
-    messageBody: String, default: "",
-    timeStamp: {type: Date, default: Date.now},
+    userId: {type: ObjectId, ref: 'User'},
+    chatId: {type: ObjectId, ref: 'Chat'},
+    name: {type: String, ref: 'Chat'},
+    surname: {type: String, ref: 'Chat'},
+    messageBody: {type: String, default: ''}
+    timeStamp: {type: Date, default: Date.now}
 });
 
 var Message = mongoose.model('Message', messageSchema);
