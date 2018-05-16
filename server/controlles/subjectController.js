@@ -43,7 +43,7 @@ router.get('/',authenticate,function (req,res) {
 router.get('/all', function (req,res) {
 
     Subject.find().then(function (subjects) {
-        res.status(200).json({subjects: subjects})
+        res.json({subjects: subjects})
     },function (err) {
         res.status(400).send(err);
     })
