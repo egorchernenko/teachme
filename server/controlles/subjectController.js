@@ -53,7 +53,7 @@ router.get('/search/:id',function (req, res) {
 
     var keyWord = req.params.id;
 
-    Subject.find({ name: { "$regex": keyWord, "$options": "i" } }).then(function (subjects) {
+    Subject.find({ title: { "$regex": keyWord, "$options": "i" } }).then(function (subjects) {
         res.send({subjects: subjects});
     }).catch(function (reason) {
         res.sendStatus(404).send(reason);
