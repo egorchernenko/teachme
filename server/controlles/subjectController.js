@@ -43,7 +43,7 @@ router.get('/',authenticate,function (req,res) {
 router.get('/all', function (req,res) {
 
     Subject.find().then(function (subjects) {
-        res.json({subjects: subjects})
+        res.json({subjects: subjects}).status(200);
     },function (err) {
         res.status(400).send(err);
     })
@@ -65,7 +65,7 @@ router.get('/category/:id',function (req, res) {
     var keyWord = req.params.id;
 
     Subject.find({ category: { "$regex": keyWord, "$options": "i" } }).then(function (subjects) {
-        res.send({subjects: subjects});
+        res.json({subjects: subjects}).status(200);
     }).catch(function (reason) {
         res.sendStatus(404).send(reason);
     });
