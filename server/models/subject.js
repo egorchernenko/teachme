@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var SubjectShema = new mongoose.Schema({
-    name: {
+    title: {
         type: String,
         required: true,
         minlength: 1,
@@ -21,7 +21,7 @@ var SubjectShema = new mongoose.Schema({
         required: true,
         default: 0
     },
-    numberOfStudent:{
+    numberOfStudents:{
         type: Number,
         default: 0
     },

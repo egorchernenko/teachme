@@ -8,12 +8,12 @@ var authenticate = require('../middleware/authenticate');
 
 router.post('/',authenticate, function (req,res) {
     var subject = new Subject({
-        name: req.body.name,
+        title: req.body.title,
         _teacher: req.user._id,
         price: req.body.price,
         category: req.body.category,
         description: req.body.description,
-        teacherName: req.user.email,
+        teacherName: req.user.name + ' ' + req.user.surname,
         schedule: req.body.schedule
     });
 
@@ -117,7 +117,7 @@ router.delete('/:id',authenticate, function (req,res) {
 //update
 router.patch('/:id',authenticate, function (req,res) {
     var id = req.params.id;
-    var body = _.pick(req.body, ['name', 'description']);
+    var body = _.pick(req.body, ['title', 'description']);
 
     Subject.findOneAndUpdate({_id: id, _teacher: req.user._id}, {$set: body}, {new: true}).then(function (subject) {
         if (!subject){

@@ -88,13 +88,14 @@ router.delete('/me/token', authenticate, function (req,res) {
 });
 
 //add subjects
+//not working
 router.patch('/add/subject/:id',authenticate, function (req,res) {
     var id = req.params.id;
 
     Subject.findOne({_id:id}).then(function (subject) {
 
         subject.update({
-            $inc: {numberOfStudent: 1 }
+            $inc: {numberOfStudents: 1 }
         }).then(function () {
             req.user.addSubject(subject).then(function () {
                 res.sendStatus(200);
