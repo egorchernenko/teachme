@@ -16,7 +16,7 @@ var UserSchema = new mongoose.Schema({
     },
     imagePath: {
         type: String,
-        default: null
+        default: ""
     },
     mySubjects: [{
       type: subject.schema
@@ -54,7 +54,7 @@ UserSchema.methods.toJSON = function () {
   var user = this;
   var userObject = user.toObject();
 
-  return _.pick(userObject,['_id','email']);
+  return _.pick(userObject,['_id','email','name','surname','mySubjects','imagePath']);
 };
 
 UserSchema.methods.generateAuthToken = function () {
