@@ -118,4 +118,14 @@ router.get('/subjects/subscribed', authenticate, function (req,res) {
 
 });
 
+router.get('/byId/:id', function (req, res) {
+   var id = req.params.id;
+
+   User.findOne({_id: id}).then(function (user) {
+       res.send(user).status(200);
+   }).catch(function () {
+       res.status(400);
+   })
+});
+
 module.exports = router;
