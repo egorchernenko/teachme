@@ -38,14 +38,9 @@ router.post('/uploadPhoto',authenticate, upload,function (req,res) {
 
 router.get('/avatar/:id',function (req,res) {
 
-    var id = req.params.id;
-
-    User.findOne({_id: id}).then(function (user) {
-        var filePath = fs.readFileSync('./uploads/'+ user.imagePath);
-        res.send(filePath);
-    }).catch(function (reason) {
-        res.send(reason);
-    })
+    var imagePath = req.params.id;
+    var imageData= fs.readFileSync('./uploads/'+ imagePath);
+    res.send(imageData);
 });
 
 //register
