@@ -27,7 +27,7 @@ router.post('/uploadPhoto',authenticate, upload,function (req,res) {
                 imagePath: 'avatar' + '-' + user._id + '.jpg'
             }
         }).then(function () {
-            res.send({imagePath: 'avatar' + '-' + user._id + '.jpg'});
+            res.send({imagePath: 'avatar' + '-' + user._id});
         }).catch(function (reason) {
             res.sendStatus(404);
         })
