@@ -37,6 +37,7 @@ router.post('/uploadPhoto',authenticate, upload,function (req,res) {
 });
 
 router.get('/avatar/:id',function (req,res) {
+
     var id = req.params.id;
 
     User.findOne({_id: id}).then(function (user) {
