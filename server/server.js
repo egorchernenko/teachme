@@ -108,6 +108,16 @@ app.get('/chat/myChats',authenticate, function (req,res) {
 
 });
 
+app.get('/chat/allMessages/:id',authenticate, function (req,res) {
+   let chatId = req.params.id;
+
+    Message.find({_id: chatId}).then(function (messages) {
+        res.json({messages: messages});
+    }).catch(function () {
+        res.status(400);
+    })
+});
+
 
 //documentation
 app.get('/',function (req,res) {
