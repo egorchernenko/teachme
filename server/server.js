@@ -41,7 +41,7 @@ io.on('connection', function (scoket) {
             messageBody: messageBody
         });
 
-        newMessage.save(function (err, msg) {
+        newMessage.save(function (err) {
             console.log('message sent');
 
             io.emit('messageCreated', msg.messageBody, msg.userId, msg.chatId, msg.name, msg.imagePath,msg.timeStamp)
@@ -111,7 +111,7 @@ app.get('/chat/myChats',authenticate, function (req,res) {
 app.get('/chat/allMessages/:id',authenticate, function (req,res) {
    let chatId = req.params.id;
 
-    Message.find({_id: chatId}).then(function (messages) {
+    Message.find({chatId: chatId}).then(function (messages) {
         res.json({messages: messages});
     }).catch(function () {
         res.status(400);
