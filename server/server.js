@@ -27,6 +27,29 @@ var server = http.createServer(app);
 var io = socketIO(server);
 
 
+io.on('connection', function (scoket) {
+    console.log('user connected');
+
+    scoket.on('newMessage',function (messageBody, userId, chatId, userName, userImagePath) {
+        console.log(messageBody);
+
+        var newMessage = new Message({
+            userId: userId,
+            chatId: chatId,
+            name: userName,
+            imagePath: userImagePath,
+            messageBody: messageBody
+        });
+
+        newMessage.save(function (err, msg) {
+            console.log('message sent');
+
+            io.emit('messageCreated', msg.messageBody, msg.userId, msg.chatId, msg.name, msg.imagePath,msg.timeStamp)
+        });
+    })
+});
+
+
 app.post('/chat/create', authenticate, function (req,res) {
 
     User.findById(req.body._id).then(function (user) {
@@ -35,16 +58,9 @@ app.post('/chat/create', authenticate, function (req,res) {
         }
 
         var newChat = new Chat({
-            user1: {
-                _id: req.user.id,
-                name: req.user.name + ' ' + req.user.surname,
-                image: req.user.name + '.jpg'
-            },
-            user2: {
-                _id: user._id,
-                name: user.name + ' ' + user.surname,
-                image: user.name + '.jpg'
-            }
+            user1: req.user.toJSON(),
+            user2: user.toJSON()
+
         });
 
         Chat.find({$or: [{
@@ -61,7 +77,7 @@ app.post('/chat/create', authenticate, function (req,res) {
                 res.sendStatus(400);
             } else {
                 newChat.save().then(function () {
-                    res.sendStatus(200);
+                    res.json(newChat).status(200);
                 }).catch(function (reason) {
                     res.send(reason).sendStatus(409);
                 })
@@ -75,6 +91,23 @@ app.post('/chat/create', authenticate, function (req,res) {
         res.status(400).send(reason);
     })
 });
+
+app.get('/chat/myChats',authenticate, function (req,res) {
+
+        Chat.find({$or: [{
+                user1: req.user.toJSON(),
+            }, {
+                user2: req.user.toJSON(),
+                }
+            ]
+        }).then(function (chats) {
+            res.json({chats: chats}).status(200);
+        }).catch(function (reason) {
+            res.sendStatus(400);
+        });
+
+});
+
 
 //documentation
 app.get('/',function (req,res) {
@@ -91,4 +124,4 @@ server.listen(port, function () {
     console.log(`Server is up on ${port}`);
 });
 
-module.exports = app;
+module.exports = { app, io };
