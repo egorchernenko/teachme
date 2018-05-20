@@ -24,10 +24,10 @@ router.post('/uploadPhoto',authenticate, upload,function (req,res) {
     User.findOne(req.user).then(function (user) {
         user.update({
             $set: {
-                imagePath: 'avatar' + '-' + user._id
+                imagePath: 'avatar' + '-' + user._id + '.jpg'
             }
         }).then(function () {
-            res.send({imagePath: 'avatar' + '-' + user._id});
+            res.send({imagePath: 'avatar' + '-' + user._id} + '.jpg');
         }).catch(function (reason) {
             res.sendStatus(404);
         })
