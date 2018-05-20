@@ -41,7 +41,7 @@ io.on('connection', function (scoket) {
             messageBody: messageBody
         });
 
-        newMessage.save(function (err) {
+        newMessage.save(function (err,msg) {
             console.log('message sent');
 
             io.emit('messageCreated', msg.messageBody, msg.userId, msg.chatId, msg.name, msg.imagePath,msg.timeStamp)
