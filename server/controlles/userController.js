@@ -86,7 +86,6 @@ router.delete('/me/token', authenticate, function (req,res) {
 });
 
 //add subjects
-//not working
 router.patch('/add/subject/:id',authenticate, function (req,res) {
     var id = req.params.id;
 

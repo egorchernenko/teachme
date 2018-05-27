@@ -27,10 +27,10 @@ var server = http.createServer(app);
 var io = socketIO(server);
 
 
-io.on('connection', function (scoket) {
+io.on('connection', function (socket) {
     console.log('user connected');
 
-    scoket.on('newMessage',function (messageBody, userId, chatId, userName, userImagePath) {
+    socket.on('newMessage',function (messageBody, userId, chatId, userName, userImagePath) {
         console.log(messageBody);
 
         var newMessage = new Message({
@@ -46,7 +46,18 @@ io.on('connection', function (scoket) {
 
             io.emit('messageCreated', msg.messageBody, msg.userId, msg.chatId, msg.name, msg.imagePath,msg.timeStamp)
         });
-    })
+    });
+    
+    
+    socket.on('outgoingCall', function (chanelId, userId) {
+
+        User.findOne({_id: userId}).then(function (user) {
+
+            io.emit('incomingCall', chanelId, user.name, user.surname, user.imagePath,user._id)
+        }).catch();
+    });
+
+    
 });
 
 
