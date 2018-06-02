@@ -85,7 +85,7 @@ app.post('/chat/create', authenticate, function (req,res) {
             ]
         }).then(function (chat) {
             if (chat.length > 0){
-                res.sendStatus(400);
+                res.json(chat).status(200);
             } else {
                 newChat.save().then(function () {
                     res.json(newChat).status(200);
